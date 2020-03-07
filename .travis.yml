@@ -15,22 +15,13 @@ script:
   - tar xf codelite-*-gtk.src.tar.xz
   - cd codelite-*/
   - mkdir -p build-dbg3 && cd build-dbg3/ 
-  - cmake -G "Unix Makefiles" VERBOSE=1 -DCMAKE_BUILD_TYPE=DebugFull -DWITH_PCH=0 -DCL_PREFIX=$(pwd)/../CLgtk3-install-4appimage/usr -DCOPY_WX_LIBS=1 ..
+  - cmake -G "Unix Makefiles" VERBOSE=1 -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=/usr -DWITH_PCH=0 -DCOPY_WX_LIBS=1 ..
   - make -j$(nproc)
-  - make install
-  - cd CLgtk3-install-4appimage
-  - cp usr/share/applications/codelite.desktop .
-  - mv usr/lib/codelite/debuggers/debuggers/*.so  usr/lib/codelite
-  - for f in *.so; do patchelf --set-rpath '$ORIGIN' $f; done
-  - mv usr/lib/codelite/*.so -> usr/lib/
-  - for f in usr/bin/*; do patchelf --set-rpath '$ORIGIN/../lib' $f; done
-  - wget -c https://github.com/linuxdeploy/linuxdeploy/releases/download/continuous/linuxdeploy-x86_64.AppImage
-  - chmod +x linuxdeploy-x86_64.AppImage
-  - ARCH=x86_64 VERSION=13.9 ./linuxdeploy-x86_64.AppImage --appdir . --output appimage
-  
-after_success:
-  - wget -c https://github.com/probonopd/uploadtool/raw/master/upload.sh
-  - bash upload.sh APPNAME*.AppImage*
+  - make DESTDIR=appdir -j$(nproc) install ; find appdir/
+  - wget -c -nv https://github.com/$(wget -q https://github.com/probonopd/go-appimage/releases -O - | grep "appimagetool-.*-x86_64.AppImage" | head -n 1 | cut -d '"' -f 2)
+  - chmod +x ./appimagetool-*.AppImage
+  - ./appimagetool-*.AppImage deploy appdir/usr/share/applications/*.desktop
+  - ./appimagetool-*.AppImage appdir/
   
 branches:
   except:
