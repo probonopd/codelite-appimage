@@ -18,7 +18,7 @@ script:
   - cmake -G "Unix Makefiles" VERBOSE=1 -DCMAKE_BUILD_TYPE=DebugFull -DWITH_PCH=0 -DCL_PREFIX=$(pwd)/../CLgtk3-install-4appimage/usr -DCOPY_WX_LIBS=1 ..
   - make -j$(nproc)
   - make install
-  - cd CLgtk3-install-4appimage
+  - cd ../CLgtk3-install-4appimage
   - cp usr/share/applications/codelite.desktop .
   - mv usr/lib/codelite/debuggers/debuggers/*.so  usr/lib/codelite
   - for f in *.so; do patchelf --set-rpath '$ORIGIN' $f; done
