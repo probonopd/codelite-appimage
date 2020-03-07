@@ -2,6 +2,7 @@ language: cpp
 compiler: gcc
 sudo: require
 dist: xenial
+cache: ccache
 
 install:
   - sudo apt-get -y install cmake libsqlite3-dev libssh-dev libgtk-3-dev libgtk2.0-dev libwebkitgtk-1.0-0
@@ -21,6 +22,7 @@ script:
   - wget -c -nv https://github.com/$(wget -q https://github.com/probonopd/go-appimage/releases -O - | grep "appimagetool-.*-x86_64.AppImage" | head -n 1 | cut -d '"' -f 2)
   - chmod +x ./appimagetool-*.AppImage
   - ./appimagetool-*.AppImage deploy appdir/usr/share/applications/*.desktop
+  - cp appdir/usr/share/icons/hicolor/128x128/apps/codelite.png appdir/ # FIXME: appimagetool should do this in the future
   - ./appimagetool-*.AppImage appdir/
   
 branches:
