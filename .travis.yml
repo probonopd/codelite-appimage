@@ -4,7 +4,7 @@ sudo: require
 dist: xenial
 
 install:
-  - sudo apt-get -y install cmake libsqlite3-dev libssh-dev libgtk-3-dev libgtk2.0-dev
+  - sudo apt-get -y install cmake libsqlite3-dev libssh-dev libgtk-3-dev libgtk2.0-dev libwebkitgtk-1.0-0
   - wget -c -nv https://www.4pane.co.uk/temp/wx3.1.tar.xz
   - tar xf wx*.tar.xz
   - sudo dpkg -i *.deb || true # FIXME: Is there a better way to do this and the next line together?
