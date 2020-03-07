@@ -1,0 +1,38 @@
+language: cpp
+compiler: gcc
+sudo: require
+dist: xenial
+
+install:
+  - sudo apt-get -y install cmake libsqlite3-dev libssh-dev libgtk-3-dev libgtk2.0-dev
+  - wget -c -nv https://www.4pane.co.uk/temp/wx3.1.tar.xz
+  - tar xf wx*.tar.xz
+  - sudo dpkg -i *.deb || true # FIXME: Is there a better way to do this and the next line together?
+  - sudo apt-get -f install -y
+
+script:
+  - wget -c -nv https://www.4pane.co.uk/temp/codelite-13.9-gtk.src.tar.xz
+  - tar xf codelite-*-gtk.src.tar.xz
+  - cd codelite-*/
+  - mkdir -p build-dbg3 && cd build-dbg3/ 
+  - cmake -G "Unix Makefiles" VERBOSE=1 -DCMAKE_BUILD_TYPE=DebugFull -DWITH_PCH=0 -DCL_PREFIX=$(pwd)/../CLgtk3-install-4appimage/usr -DCOPY_WX_LIBS=1 ..
+  - make -j$(nproc)
+  - make install
+  - cd CLgtk3-install-4appimage
+  - cp usr/share/applications/codelite.desktop .
+  - mv usr/lib/codelite/debuggers/debuggers/*.so  usr/lib/codelite
+  - for f in *.so; do patchelf --set-rpath '$ORIGIN' $f; done
+  - mv usr/lib/codelite/*.so -> usr/lib/
+  - for f in usr/bin/*; do patchelf --set-rpath '$ORIGIN/../lib' $f; done
+  - wget -c https://github.com/linuxdeploy/linuxdeploy/releases/download/continuous/linuxdeploy-x86_64.AppImage
+  - chmod +x linuxdeploy-x86_64.AppImage
+  - ARCH=x86_64 VERSION=13.9 ./linuxdeploy-x86_64.AppImage --appdir . --output appimage
+  
+after_success:
+  - wget -c https://github.com/probonopd/uploadtool/raw/master/upload.sh
+  - bash upload.sh APPNAME*.AppImage*
+  
+branches:
+  except:
+    - # Do not build tags that we create when we upload to GitHub Releases
+    - /^(?i:continuous)/
