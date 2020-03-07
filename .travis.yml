@@ -15,7 +15,7 @@ script:
   - tar xf codelite-*-gtk.src.tar.xz
   - cd codelite-*/
   - mkdir -p build-dbg3 && cd build-dbg3/ 
-  - cmake -G "Unix Makefiles" VERBOSE=1 -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=/usr -DWITH_PCH=0 -DCOPY_WX_LIBS=1 ..
+  - cmake -G "Unix Makefiles" VERBOSE=1 -DCMAKE_BUILD_TYPE=Release -DNO_CORE_PLUGINS=1 -DCMAKE_INSTALL_PREFIX=/usr -DWITH_PCH=0 -DCOPY_WX_LIBS=1 ..
   - make -j$(nproc)
   - make DESTDIR=appdir -j$(nproc) install ; find appdir/
   - wget -c -nv https://github.com/$(wget -q https://github.com/probonopd/go-appimage/releases -O - | grep "appimagetool-.*-x86_64.AppImage" | head -n 1 | cut -d '"' -f 2)
