@@ -15,7 +15,7 @@ script:
   - tar xf codelite-*-gtk.src.tar.xz
   - cd codelite-*/
   - mkdir -p build-dbg3 && cd build-dbg3/ 
-  - cmake -G "Unix Makefiles" VERBOSE=1 -DCMAKE_BUILD_TYPE=DebugFull -DWITH_PCH=0 -DCL_PREFIX=$(pwd)/../CLgtk3-install-4appimage/usr -DCOPY_WX_LIBS=1 ..
+  - cmake -G "Unix Makefiles" VERBOSE=1 -DCMAKE_BUILD_TYPE=DebugFull -DNO_CORE_PLUGINS=1 -DWITH_PCH=0 -DCL_PREFIX=$(pwd)/../CLgtk3-install-4appimage/usr -DCOPY_WX_LIBS=1 ..
   - make -j$(nproc)
   - make install
   - cd ../CLgtk3-install-4appimage
